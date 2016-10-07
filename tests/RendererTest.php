@@ -9,13 +9,14 @@ use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequestFactory;
+use Zend\Diactoros\Stream;
 
 class RendererTest extends TestCase
 {
 
     public function testDefault()
     {
-        $middleware = new Minify();
+        $middleware = new Minify($this->_streamInterfaceCallback());
         $request = ServerRequestFactory::fromGlobals([]);
         $response = new HtmlResponse('');
 
@@ -33,7 +34,7 @@ class RendererTest extends TestCase
 
     public function testPre()
     {
-        $middleware = new Minify();
+        $middleware = new Minify($this->_streamInterfaceCallback());
         $request = ServerRequestFactory::fromGlobals([]);
         $response = new HtmlResponse('');
 
@@ -49,4 +50,10 @@ class RendererTest extends TestCase
         $this->assertSame('<p>A</p> <p>B</p> <pre>var i = 0; var s = "<p>A</p>     <p>B</p>";</pre>', $body->getContents());
     }
 
+    protected function _streamInterfaceCallback()
+    {
+        return function () {
+            return new Stream(fopen('php://temp', 'r+'));
+        };
+    }
 }

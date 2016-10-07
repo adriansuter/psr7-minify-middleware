@@ -4,7 +4,7 @@ namespace AdrianSuter\PSR7\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Stream;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Class Minify.
@@ -15,6 +15,23 @@ class Minify
 {
 
     /**
+     * @var callable
+     */
+    private $_streamInterfaceCallback = null;
+
+    /**
+     * Constructor.
+     *
+     * @param callable $streamInterfaceCallback The callback should return a new object implementing the StreamInterface.
+     */
+    public function __construct(callable $streamInterfaceCallback)
+    {
+        $this->_streamInterfaceCallback = $streamInterfaceCallback;
+    }
+
+    /**
+     * Invokes this middleware.
+     *
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param callable|null $next
@@ -35,12 +52,12 @@ class Minify
 
                 $content = $this->_minifyHtml($body->getContents());
 
-                $body = new Stream(fopen('php://temp', 'r+'));
+                /** @var StreamInterface $body */
+                $body = call_user_func($this->_streamInterfaceCallback);
                 $body->write($content);
                 $response = $response->withBody($body);
             }
         }
-
 
         return $response;
     }
@@ -52,7 +69,7 @@ class Minify
      * @return string The minified html code.
      * @see http://stackoverflow.com/a/27990578
      */
-    private function _minifyHtml($buffer)
+    protected function _minifyHtml($buffer)
     {
         // Searching textarea and pre
         preg_match_all('#\<textarea.*\>.*\<\/textarea\>#Uis', $buffer, $foundTxt);
