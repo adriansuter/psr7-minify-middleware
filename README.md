@@ -34,7 +34,7 @@ $app->add(
 
 ## Testing
 
-* Unit tests: ``$ vendor/bin/phpunit --bootstrap tests/bootstrap.php tests/RendererTest``
+* Unit tests: ``$ vendor/bin/phpunit``
 
 [Master]: https://travis-ci.org/adriansuter/psr7-minify-middleware
 [Master image]: https://travis-ci.org/adriansuter/psr7-minify-middleware.svg?branch=master
