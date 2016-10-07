@@ -19,3 +19,6 @@ $app->add(new AdrianSuter\PSR7\Middleware\Minify());
 ## Testing
 
 * Unit tests: ``$ vendor/bin/phpunit --bootstrap tests/bootstrap.php tests/RendererTest``
+
+[Master]: https://travis-ci.org/adriansuter/psr7-minify-middleware
+[Master image]: https://travis-ci.org/adriansuter/psr7-minify-middleware.svg?branch=master
