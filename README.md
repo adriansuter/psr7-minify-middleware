@@ -10,6 +10,10 @@ Simple PSR-7 Middleware that minifies the response body.
 
 ## Usage
 
+The constructor of this middleware needs a callback that returns a new object
+implementing the `([Psr\Http\Message\StreamInterface](https://github.com/php-fig/http-message/blob/master/src/StreamInterface.php))`
+in order to be able to minify the content.
+
 In Slim 3:
 
 ```php
@@ -20,7 +24,7 @@ use Slim\Http\Body;
 // [...]
 
 $app->add(
-    new AdrianSuter\PSR7\Middleware\Minify(
+    new Minify(
         function () {
             return new Body(fopen('php://temp', 'r+'));
         }
