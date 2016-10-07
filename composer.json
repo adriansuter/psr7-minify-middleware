@@ -1,6 +1,6 @@
 {
   "name": "adriansuter/psr7-minify-middleware",
-  "description": "PSR-7 Middleware that minifies the html output",
+  "description": "PSR-7 Middleware that minifies the response body",
   "keywords": [
     "psr7",
     "middleware",
