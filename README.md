@@ -13,7 +13,19 @@ Simple PSR-7 Middleware that minifies the response body.
 In Slim 3:
 
 ```php
-$app->add(new AdrianSuter\PSR7\Middleware\Minify());
+use AdrianSuter\PSR7\Middleware\Minify;
+use Slim\Http\Body;
+
+// Create the application $app
+// [...]
+
+$app->add(
+    new AdrianSuter\PSR7\Middleware\Minify(
+        function () {
+            return new Body(fopen('php://temp', 'r+'));
+        }
+    )
+);
 ```
 
 ## Testing
