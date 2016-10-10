@@ -50,6 +50,28 @@ class RendererTest extends TestCase
         $this->assertSame('<p>A</p> <p>B</p> <pre>var i = 0; var s = "<p>A</p>     <p>B</p>";</pre>', $body->getContents());
     }
 
+    /**
+     * Tests the tags to be ignored.
+     */
+    public function testIgnoredTags()
+    {
+        $middleware = new Minify($this->_streamInterfaceCallback(), ['script']);
+        $request = ServerRequestFactory::fromGlobals([]);
+        $response = new HtmlResponse('');
+
+        /** @var HtmlResponse $response */
+        $response = $middleware($request, $response, function (RequestInterface $request, ResponseInterface $response) {
+            $response->getBody()->write('<pre>   Hello   </pre><script>  var i   =   0;</script>');
+            return $response;
+        });
+
+        $body = $response->getBody();
+        $body->rewind();
+        
+        // While the pre-element should minify, the script should not.
+        $this->assertSame('<pre> Hello </pre><script>  var i   =   0;</script>', $body->getContents());
+    }
+
     protected function _streamInterfaceCallback()
     {
         return function () {

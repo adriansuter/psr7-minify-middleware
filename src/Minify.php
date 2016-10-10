@@ -20,13 +20,20 @@ class Minify
     private $_streamInterfaceCallback = null;
 
     /**
+     * @var array
+     */
+    private $_ignoreTags = ['textarea', 'pre'];
+
+    /**
      * Constructor.
      *
      * @param callable $streamInterfaceCallback The callback should return a new object implementing the StreamInterface.
+     * @param array $ignoreTags The tags (html elements) to be skipped from the minification.
      */
-    public function __construct(callable $streamInterfaceCallback)
+    public function __construct(callable $streamInterfaceCallback, $ignoreTags = ['textarea', 'pre'])
     {
         $this->_streamInterfaceCallback = $streamInterfaceCallback;
+        $this->_ignoreTags = $ignoreTags;
     }
 
     /**
@@ -67,35 +74,44 @@ class Minify
      *
      * @param string $buffer The html code.
      * @return string The minified html code.
+     *
      * @see http://stackoverflow.com/a/27990578
      */
     protected function _minifyHtml($buffer)
     {
-        // Searching textarea and pre
-        preg_match_all('#\<textarea.*\>.*\<\/textarea\>#Uis', $buffer, $foundTxt);
-        preg_match_all('#\<pre.*\>.*\<\/pre\>#Uis', $buffer, $foundPre);
+        // Count the number of html elements to be ignored.
+        $c_ignoreTags = count($this->_ignoreTags);
 
-        // replacing both with <textarea>$index</textarea> / <pre>$index</pre>
-        $buffer = str_replace($foundTxt[0], array_map(function ($el) {
-            return '<textarea>' . $el . '</textarea>';
-        }, array_keys($foundTxt[0])), $buffer);
-        $buffer = str_replace($foundPre[0], array_map(function ($el) {
-            return '<pre>' . $el . '</pre>';
-        }, array_keys($foundPre[0])), $buffer);
+        // Find all html elements to be ignored in the given html code.
+        $patterns = [];
+        for ($i = 0; $i < $c_ignoreTags; $i++) {
+            preg_match_all('#\<' . $this->_ignoreTags[$i] . '.*\>.*\<\/' . $this->_ignoreTags[$i] . '\>#Uis', $buffer, $patterns[$i]);
+        }
 
+        // Replace all the html elements to be ignored by special placeholders.
+        for ($i = 0; $i < $c_ignoreTags; $i++) {
+            $ignoreTag = $this->_ignoreTags[$i];
+            $buffer = str_replace($patterns[$i][0], array_map(function ($el) use ($ignoreTag) {
+                return '<' . $ignoreTag . '>' . $el . '</' . $ignoreTag . '>';
+            }, array_keys($patterns[$i][0])), $buffer);
+        }
+
+        ///
+        // Minify the html code.
+        ///
         // See: https://github.com/christianklisch/slim-minify
         //      https://github.com/christianklisch/slim-minify/blob/master/src/Slim/Middleware/Minify.php
         $search = ['/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\')\/\/.*))/', '/\n/', '/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s'];
         $replace = [' ', ' ', '>', '<', '\\1'];
         $buffer = preg_replace($search, $replace, $buffer);
 
-        // Replacing back with content
-        $buffer = str_replace(array_map(function ($el) {
-            return '<textarea>' . $el . '</textarea>';
-        }, array_keys($foundTxt[0])), $foundTxt[0], $buffer);
-        $buffer = str_replace(array_map(function ($el) {
-            return '<pre>' . $el . '</pre>';
-        }, array_keys($foundPre[0])), $foundPre[0], $buffer);
+        // Restore the html elements to be ignored.
+        for ($i = 0; $i < $c_ignoreTags; $i++) {
+            $ignoreTag = $this->_ignoreTags[$i];
+            $buffer = str_replace(array_map(function ($el) use ($ignoreTag) {
+                return '<' . $ignoreTag . '>' . $el . '</' . $ignoreTag . '>';
+            }, array_keys($patterns[$i][0])), $patterns[$i][0], $buffer);
+        }
 
         return $buffer;
     }
