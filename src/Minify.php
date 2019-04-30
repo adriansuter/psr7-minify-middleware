@@ -54,7 +54,7 @@ class Minify
         if ($next) {
             $response = $next($request, $response);
         }
-        
+
         // If the content type is text/html, we would minify the code.
         $contentType = $response->getHeader('Content-type');
         if (false !== stripos(implode('', $contentType), 'text/html')) {
