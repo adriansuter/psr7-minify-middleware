@@ -1,4 +1,9 @@
 <?php
+/**
+ * PSR7 Minify Middleware.
+ *
+ * @license https://github.com/adriansuter/psr7-minify-middleware/blob/master/LICENSE (MIT License)
+ */
 
 namespace AdrianSuter\PSR7\Middleware;
 
@@ -49,7 +54,7 @@ class Minify
         if ($next) {
             $response = $next($request, $response);
         }
-
+        
         // If the content type is text/html, we would minify the code.
         $contentType = $response->getHeader('Content-type');
         if (false !== stripos(implode('', $contentType), 'text/html')) {

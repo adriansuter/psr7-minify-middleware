@@ -1,4 +1,9 @@
 <?php
+/**
+ * PSR7 Minify Middleware.
+ *
+ * @license https://github.com/adriansuter/psr7-minify-middleware/blob/master/LICENSE (MIT License)
+ */
 
 use Composer\Autoload\ClassLoader;
 
