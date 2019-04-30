@@ -20,3 +20,7 @@ install:
 
 script:
   - vendor/bin/phpunit
+
+after_success:
+  - travis_retry composer require php-coveralls/php-coveralls:^2.1.0
+  - travis_retry php vendor/bin/php-coveralls
