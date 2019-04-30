@@ -1,6 +1,10 @@
 # PSR-7 middleware to minify the response body
 
-[![Build status][Master image]][Master] [![Coverage Status](https://coveralls.io/repos/github/adriansuter/psr7-minify-middleware/badge.svg?branch=master)](https://coveralls.io/github/adriansuter/psr7-minify-middleware?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/adriansuter/psr7-minify-middleware/v/stable)](https://packagist.org/packages/adriansuter/psr7-minify-middleware)
+[![Build status][Master image]][Master]
+[![Coverage Status](https://coveralls.io/repos/github/adriansuter/psr7-minify-middleware/badge.svg?branch=master)](https://coveralls.io/github/adriansuter/psr7-minify-middleware?branch=master)
+[![Total Downloads](https://poser.pugx.org/adriansuter/psr7-minify-middleware/downloads)](https://packagist.org/packages/adriansuter/psr7-minify-middleware)
+[![License](https://poser.pugx.org/adriansuter/psr7-minify-middleware/license)](https://packagist.org/packages/adriansuter/psr7-minify-middleware)
 
 Simple PSR-7 Middleware that minifies the response body. This middleware can be used to minify the html output.
 
