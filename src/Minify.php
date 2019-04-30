@@ -52,7 +52,7 @@ class Minify
 
         // If the content type is text/html, we would minify the code.
         $contentType = $response->getHeader('Content-type');
-        if (FALSE !== stripos(implode('', $contentType), 'text/html')) {
+        if (false !== stripos(implode('', $contentType), 'text/html')) {
             $body = $response->getBody();
             if ($body->isSeekable()) {
                 $body->rewind();
@@ -85,7 +85,8 @@ class Minify
         // Find all html elements to be ignored in the given html code.
         $patterns = [];
         for ($i = 0; $i < $c_ignoreTags; $i++) {
-            preg_match_all('#\<' . $this->_ignoreTags[$i] . '.*\>.*\<\/' . $this->_ignoreTags[$i] . '\>#Uis', $buffer, $patterns[$i]);
+            preg_match_all('#\<' . $this->_ignoreTags[$i] . '.*\>.*\<\/' . $this->_ignoreTags[$i] . '\>#Uis', $buffer,
+                $patterns[$i]);
         }
 
         // Replace all the html elements to be ignored by special placeholders.
@@ -101,7 +102,13 @@ class Minify
         ///
         // See: https://github.com/christianklisch/slim-minify
         //      https://github.com/christianklisch/slim-minify/blob/master/src/Slim/Middleware/Minify.php
-        $search = ['/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\')\/\/.*))/', '/\n/', '/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s'];
+        $search = [
+            '/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\')\/\/.*))/',
+            '/\n/',
+            '/\>[^\S ]+/s',
+            '/[^\S ]+\</s',
+            '/(\s)+/s'
+        ];
         $replace = [' ', ' ', '>', '<', '\\1'];
         $buffer = preg_replace($search, $replace, $buffer);
 

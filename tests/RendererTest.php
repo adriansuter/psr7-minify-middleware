@@ -6,7 +6,6 @@ use AdrianSuter\PSR7\Middleware\Minify;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Stream;
@@ -47,7 +46,8 @@ class RendererTest extends TestCase
         $body = $response->getBody();
         $body->rewind();
 
-        $this->assertSame('<p>A</p> <p>B</p> <pre>var i = 0; var s = "<p>A</p>     <p>B</p>";</pre>', $body->getContents());
+        $this->assertSame('<p>A</p> <p>B</p> <pre>var i = 0; var s = "<p>A</p>     <p>B</p>";</pre>',
+            $body->getContents());
     }
 
     /**
@@ -67,7 +67,7 @@ class RendererTest extends TestCase
 
         $body = $response->getBody();
         $body->rewind();
-        
+
         // While the pre-element should minify, the script should not.
         $this->assertSame('<pre> Hello </pre><script>  var i   =   0;</script>', $body->getContents());
     }
